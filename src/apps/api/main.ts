@@ -1,0 +1,3 @@
+function api(): void {}
+
+api();

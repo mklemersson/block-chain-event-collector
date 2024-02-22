@@ -1,0 +1,8 @@
+# Folders
+dist/
+.vscode/
+.idea/
+node_modules/
+
+# Connfig files
+.env
