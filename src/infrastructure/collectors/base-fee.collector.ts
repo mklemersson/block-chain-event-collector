@@ -1,17 +1,19 @@
 import { InterfaceAbi } from 'ethers/abi';
-import { Contract, ContractInterface, EventLog } from 'ethers/contract';
+import { Contract, EventLog } from 'ethers/contract';
 import { BlockTag, ContractRunner, Log } from 'ethers/providers';
-import { ParsedFeeCollectedEvents } from 'src/domain/transaction/types';
+import { ParsedFeeCollectedEvents } from '../../domain/transaction/types';
+
+export type ContractEventLog = EventLog | Log;
 
 export interface IFeeCollector {
 	loadFeeEvents(
 		fromBlock: BlockTag,
-		toBlock: BlockTag
-	): Promise<(EventLog | Log)[]>;
-	parseEvents(events: (EventLog | Log)[]): ParsedFeeCollectedEvents[];
+		toBlock?: BlockTag
+	): Promise<ContractEventLog[]>;
+	parseEvents(events: ContractEventLog[]): ParsedFeeCollectedEvents[];
 }
 
-export abstract class BaseFeeCollector implements IFeeCollector {
+export class BaseFeeCollector implements IFeeCollector {
 	protected collector: Contract;
 
 	constructor(
@@ -22,14 +24,10 @@ export abstract class BaseFeeCollector implements IFeeCollector {
 		this.collector = new Contract(address, abi, provider);
 	}
 
-	parseEvents(events: (EventLog | Log)[]): ParsedFeeCollectedEvents[] {
+	parseEvents(events: ContractEventLog[]): ParsedFeeCollectedEvents[] {
 		return events.map((event) => {
-			const [
-				token = '',
-				integrator = '',
-				integratorFee = '-1',
-				lifiFee = '-1'
-			] = this.collector.interface.parseLog(event)?.args ?? [];
+			const [token = '', integrator = '', integratorFee = -1, lifiFee = -1] =
+				this.collector.interface.parseLog(event)?.args ?? [];
 
 			const feesCollected: ParsedFeeCollectedEvents = {
 				token,
@@ -43,8 +41,8 @@ export abstract class BaseFeeCollector implements IFeeCollector {
 
 	loadFeeEvents(
 		fromBlock: BlockTag,
-		toBlock: BlockTag
-	): Promise<(EventLog | Log)[]> {
+		toBlock?: BlockTag
+	): Promise<ContractEventLog[]> {
 		const filter = this.collector.filters.FeesCollected();
 		return this.collector.queryFilter(filter, fromBlock, toBlock);
 	}
