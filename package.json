@@ -16,8 +16,7 @@
     "dev:worker": "ts-node src/app/worker/main.ts | pino-pretty",
     "lint": "biome lint ./src",
     "lint:fix": "biome check ./src --apply",
-    "test": "jest src/",
-    "test:integration": "jest tests/integration/"
+    "test": "jest tests/"
   },
   "engines": {
     "node": ">= 20"

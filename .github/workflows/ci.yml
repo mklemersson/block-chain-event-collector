@@ -58,6 +58,7 @@ jobs:
           pnpm tsc
 
       - name: 🧪 Run Tests
+        run: pnpm test
         env:
           DATABASE_URL: mongodb://127.0.0.1:27017/bkchain_db_test
           DATABASE_USER: bkchain_evt_user
