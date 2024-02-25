@@ -94,7 +94,7 @@ describe('# ImportEventService', () => {
 		);
 
 		await importService.run({
-			batchSize: 3000,
+			batchSize: 1000,
 			startBlock,
 			endBlock: startBlock + 10
 		});
