@@ -4,4 +4,5 @@ module.exports = {
   testEnvironment: "node",
   bail: true,
   modulePaths: ["<rootDir>/src/*", "<rootDir>/tests/*"],
+  setupFilesAfterEnv: ["<rootDir>/tests/config/setup.js"],
 };
