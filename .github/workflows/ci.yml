@@ -11,6 +11,22 @@ jobs:
     name: 🧱 Build and Test🧪
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: bitnami/mongodb
+        env:
+          MONGODB_USERNAME: bkchain_evt_user
+          MONGODB_PASSWORD: bkchain_evt_pwd
+          MONGODB_ROOT_PASSWORD: bkchain_evt_pwd
+          MONGODB_DATABASE: bkchain_db_test
+        options: >-
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -41,14 +57,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Start MongoDB
-        uses: supercharge/mongodb-github-action@1.10.0
-        with:
-          mongodb-version: "6.0"
-          mongodb-username: bkchain_evt_user
-          mongodb-password: bkchain_evt_pwd
-          mongodb-db: bkchain_db_test
-
       - name: 🧱 Install dependencies
         run: pnpm install
 
@@ -57,9 +65,18 @@ jobs:
           pnpm lint:check
           pnpm tsc
 
+      # - name: Start MongoDB
+      #   uses: supercharge/mongodb-github-action@1.10.0
+      #   with:
+      #     mongodb-version: "6.0"
+      #     mongodb-username: bkchain_evt_user
+      #     mongodb-password: bkchain_evt_pwd
+      #     mongodb-db: bkchain_db_test
+
       - name: 🧪 Run Tests
         run: pnpm test
         env:
           DATABASE_URL: mongodb://127.0.0.1:27017/bkchain_db_test
           DATABASE_USER: bkchain_evt_user
           DATABASE_PASSWORD: bkchain_evt_pwd
+          CI: true
