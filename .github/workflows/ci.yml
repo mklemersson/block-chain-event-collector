@@ -19,11 +19,6 @@ jobs:
           MONGODB_PASSWORD: bkchain_evt_pwd
           MONGODB_ROOT_PASSWORD: bkchain_evt_pwd
           MONGODB_DATABASE: bkchain_db_test
-        options: >-
-          --health-cmd mongo
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
         ports:
           - 27017:27017
 
