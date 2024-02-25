@@ -1,3 +1,4 @@
+import { JsonRpcProvider } from 'ethers';
 import mongoose from 'mongoose';
 import { ImportEventService } from '../../domain/contracts/import-event.service';
 import {
@@ -5,12 +6,11 @@ import {
 	getEventRepository,
 	getJobRepository
 } from '../../domain/contracts/repositories';
-import { JsonRpcProvider, ethers } from 'ethers';
-import { FeeCollector } from '../../infrastructure/collectors/fee.collector';
 import { CollectorsChainData } from '../../infrastructure/collectors/constants';
+import { FeeCollector } from '../../infrastructure/collectors/fee.collector';
 
-import abi from '../../infrastructure/collectors/definitions/polygonLifiAbi.json';
 import config from '../../config';
+import abi from '../../infrastructure/collectors/definitions/polygonLifiAbi.json';
 
 const stopApp = (code?: number) => {
 	console.log('Closing database connections');

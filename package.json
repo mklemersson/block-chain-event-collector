@@ -15,6 +15,7 @@
     "dev:api": "ts-node src/app/api/main.ts | pino-pretty",
     "dev:worker": "ts-node src/app/worker/main.ts | pino-pretty",
     "lint": "biome lint ./src",
+    "lint:check": "biome check ./src",
     "lint:fix": "biome check ./src --apply",
     "test": "jest tests/"
   },

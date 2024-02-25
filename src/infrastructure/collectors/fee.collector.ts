@@ -1,8 +1,8 @@
+import { ethers } from 'ethers';
 import { InterfaceAbi } from 'ethers/abi';
 import { Contract, EventLog } from 'ethers/contract';
 import { BlockTag, ContractRunner, Log } from 'ethers/providers';
 import { ParsedFeeCollectedEvents } from '../../domain/contracts/types';
-import { ethers } from 'ethers';
 
 type ContractEventLog = EventLog | Log;
 

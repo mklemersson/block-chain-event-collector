@@ -1,7 +1,7 @@
-import { EventRepository, JobRepository } from './repositories';
 import { IFeeCollector } from '../../infrastructure/collectors/fee.collector';
-import { delay } from '../../utils';
 import logger from '../../infrastructure/logger';
+import { delay } from '../../utils';
+import { EventRepository, JobRepository } from './repositories';
 
 interface JobRunOptions {
 	batchSize?: number;
