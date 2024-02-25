@@ -1,0 +1,64 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [main]
+  # pull_request:
+  #   branches: [main]
+
+jobs:
+  ci:
+    name: 🧱 Build and Test🧪
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: "6.0"
+          mongodb-username: bkchain_evt_user
+          mongodb-password: bkchain_evt_pwd
+          mongodb-db: bkchain_db_test
+
+      - name: 🧱 Install dependencies
+        run: pnpm install
+
+      - name: 🔬 Linting and checking
+        run: |
+          pnpm lint:check
+          pnpm tsc
+
+      - name: 🧪 Run Tests
+        env:
+          DATABASE_URL: mongodb://127.0.0.1:27017/bkchain_db_test
+          DATABASE_USER: bkchain_evt_user
+          DATABASE_PASSWORD: bkchain_evt_pwd
