@@ -11,7 +11,8 @@
 				"noNonNullAssertion": "off"
 			},
 			"complexity": {
-				"noBannedTypes": "off"
+				"noBannedTypes": "off",
+				"useArrowFunction": "off"
 			}
 		}
 	},
