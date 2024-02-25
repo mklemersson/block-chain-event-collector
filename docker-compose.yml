@@ -1,0 +1,44 @@
+version: '3.2'
+
+services:
+  # app:
+  #   container_name: bchain_evt_scan_app
+
+  db:
+    container_name: bchain_evt_scan_db
+    image: bitnami/mongodb:latest
+    restart: unless-stopped
+    environment:
+      MONGODB_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGODB_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - "4000:27017"
+    networks:
+      - bchain_net
+    volumes:
+      - db_vol:/opt/mongodb:rw
+
+  db_test:
+    container_name: bchain_evt_scan_db_test
+    # image: mongo:latest
+    image: bitnami/mongodb:latest
+    environment:
+      MONGODB_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGODB_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGODB_DATABASE: ${MONGO_INITDB_TEST_DATABASE}
+    ports:
+      - "4004:27017"
+    networks:
+      - bchain_net
+
+volumes:
+  ap_vol:
+  db_vol:
+
+networks:
+  bchain_net:
+    driver: bridge
+    
