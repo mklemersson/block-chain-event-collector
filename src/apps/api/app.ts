@@ -1,6 +1,6 @@
-import express from 'express';
-import cors from 'cors';
 import { json as jsonBodyParser } from 'body-parser';
+import cors from 'cors';
+import express from 'express';
 import { eventsController } from './controllers/events.controller';
 
 const app = express();

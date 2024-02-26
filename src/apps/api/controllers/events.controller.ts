@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { InvalidParameter } from '../errors';
 import { getEventRepository } from '../../../domain/contracts/repositories';
 import { mapEventToJson } from '../../../domain/contracts/utils';
+import { InvalidParameter } from '../errors';
 
 function validateRequest(req: Request) {
 	if (!req.params.integrator) {

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import logger from '../logger';
 import config from '../../config';
+import logger from '../logger';
 
 export async function getDatabaseConnection(): Promise<mongoose.Connection> {
 	try {

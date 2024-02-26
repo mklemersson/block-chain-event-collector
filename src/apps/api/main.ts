@@ -1,6 +1,6 @@
 import config from '../../config';
-import logger from '../../infrastructure/logger';
 import { getDatabaseConnection } from '../../infrastructure/database';
+import logger from '../../infrastructure/logger';
 import { setUpErrorHandlers } from '../utils';
 import app from './app';
 
