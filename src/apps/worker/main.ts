@@ -1,5 +1,4 @@
 import { JsonRpcProvider } from 'ethers';
-import mongoose from 'mongoose';
 import { ImportEventService } from '../../domain/contracts/import-event.service';
 import {
 	JobRepository,
@@ -9,44 +8,12 @@ import {
 import { CollectorsChainData } from '../../infrastructure/collectors/constants';
 import { FeeCollector } from '../../infrastructure/collectors/fee.collector';
 
-import config from '../../config';
 import abi from '../../infrastructure/collectors/definitions/polygonLifiAbi.json';
+import { getDatabaseConnection } from '../../infrastructure/database';
+import logger from '../../infrastructure/logger';
+import { setUpErrorHandlers } from '../utils';
 
-const stopApp = (code?: number) => {
-	console.log('Closing database connections');
-	mongoose.connection.close();
-
-	process.exit(code);
-};
-
-process.on('SIGINT', stopApp);
-process.on('uncaughtException', () => {
-	console.log('Unexpected error occurred, stopping the application.');
-
-	stopApp();
-});
-process.on('unhandledRejection', (error) => {
-	console.log('Unexpected rejection occurred, stopping the application.');
-	console.error(error);
-
-	stopApp();
-});
-
-async function startDatabase(): Promise<void> {
-	try {
-		await mongoose.connect(config.DATABASE_URL, {
-			auth: {
-				username: config.DATABASE_USER,
-				password: config.DATABASE_PASSWORD
-			},
-			autoCreate: true
-		});
-	} catch (_) {
-		console.error('Failed to connect to database, stopping service.');
-		process.exit(1);
-	}
-}
-
+const DEFAULT_BATCH_SIZE = 3000 as const;
 async function getLastImportedBlock(
 	jobRepository: JobRepository
 ): Promise<number> {
@@ -56,10 +23,15 @@ async function getLastImportedBlock(
 	);
 }
 
-const DEFAULT_BATCH_SIZE = 3000 as const;
+setUpErrorHandlers();
 
 async function worker(): Promise<void> {
-	await startDatabase();
+	const connection = await getDatabaseConnection();
+	connection.once('open', () => logger.info('Database connected'));
+	connection.on('error', (err) =>
+		logger.error(`Database connection error: ${err.message}`)
+	);
+
 	const provider = new JsonRpcProvider(
 		CollectorsChainData.polygon.PROVIDER_URL
 	);
@@ -84,4 +56,4 @@ async function worker(): Promise<void> {
 	});
 }
 
-worker().then(() => console.log('Worker job done.'));
+worker().then(() => logger.info('Worker job done.'));
