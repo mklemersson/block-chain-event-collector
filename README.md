@@ -27,6 +27,8 @@ In order to run the tests we need to first spin up the test database with the fo
 docker compose up -d db db_test
 ```
 
+> If you change the .env files, make sure to restart the database since the docker compose file uses its information.
+
 ### Running
 
 First, update the `.env` file to ensure you have the proper env vars available.
@@ -52,8 +54,28 @@ pnpm install
 
 pnpm dev:worker
 
-#pnpm dev:api
-#pnpm dev ## start both apps the worker and api
+pnpm dev:api
+
+# OR pnpm dev ## this will start both applications
+```
+
+#### Worker
+
+The `worker` app will be running in background using an strategy of `polling` events from `https://polygon-rpc.com` and saving the data
+into our local mongodb instance.
+
+The `worker` saves the last entry found on the event batches into a collection `job` in order to prevent reading from the oldest/origin again until the latest block
+found.
+
+#### API
+
+There is a small `API` using `express` that will be running, if used the command `npm run dev:api`, at the port `3000`.<br/>
+Currently, the API contains only `one` endpoint allowing you to retrieve all the `Fee` events collected and saved by the `worker`.
+
+You can fin this endpoint by visiting [http://localhost:3000/api/integrator/xxxxxx/events](http://localhost:3000/api/integrator/xxxxxx/events)
+
+```sh
+curl -kS http://localhost:3000/api/integrator/xxxxxx/events
 ```
 
 ### Testing
